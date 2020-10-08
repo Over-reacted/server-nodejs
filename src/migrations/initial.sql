@@ -1,6 +1,0 @@
-CREATE TABLE "users" (
-  "id" INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "email" text,
-  "created_at" TIMESTAMPTZ DEFAULT NOW(),
-  "updated_at" TIMESTAMPTZ DEFAULT NOW()
-);
