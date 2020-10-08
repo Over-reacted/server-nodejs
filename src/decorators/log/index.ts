@@ -1,1 +1,1 @@
-export { logMethod } from './log';
+export * from "./log";
