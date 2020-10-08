@@ -1,0 +1,1 @@
+export { logMethod } from './log';
