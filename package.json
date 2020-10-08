@@ -1,0 +1,7 @@
+{
+  "name": "server-nodejs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "TodorTotev <51530311+TodorTotev@users.noreply.github.com>",
+  "license": "MIT"
+}
