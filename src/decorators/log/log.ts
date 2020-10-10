@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { Logger } from "./logger";
+import { Logger } from "../../utils";
 
 export const logMethod = (
   target: Object,
