@@ -31,21 +31,11 @@ userSchema.pre("save", function save(next) {
   if (!user.isModified("password")) {
     return next();
   }
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) {
-      return next(err);
-    }
-    bcrypt.hash(user.password, salt, undefined, (err: mongoose.Error, hash) => {
-      if (err) {
-        return next(err);
-      }
-      user.password = hash;
-      next();
-    });
-  });
+  user.password = bcrypt.hashSync(user.password, "10");
 });
 
 const comparePassword: comparePasswordFunction = function (
+  this: any,
   candidatePassword,
   cb
 ) {

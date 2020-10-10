@@ -10,6 +10,7 @@ import { NotFoundError } from "../errors";
 import { Keys } from "../config";
 import { errorHandler, requestLoggerMiddleware } from "../middleware";
 import { AppRouter } from "./AppRouter";
+import "../modules/User/UserController";
 
 if (!Keys.dbHost) throw new Error("Connection string is required!");
 
