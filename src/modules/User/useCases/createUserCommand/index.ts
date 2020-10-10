@@ -25,26 +25,19 @@ export class createUserCommand {
       email: normalisedEmail,
       password: normalisedPassword,
     } = this.normalizeProperties(email, password);
-    try {
-      const user = new User({
-        email: normalisedEmail,
-        password: normalisedPassword,
-      });
 
-      User.findOne({ email: normalisedEmail }, (err, existingUser) => {
-        if (err) throw new BadRequestError(err);
-        if (existingUser)
-          throw new BadRequestError(
-            "Account with that email address already exists."
-          );
+    const doesUserExist = User.findOne({ email: normalisedEmail });
 
-        user.save();
-
-        return user;
-      });
-    } catch (error) {
-      throw new DatabaseError(error.detail);
+    if (doesUserExist) {
+      throw new BadRequestError("User already exists!");
     }
+
+    const user = new User({
+      email: normalisedEmail,
+      password: normalisedPassword,
+    });
+    user.save();
+    return user;
   }
   validateProperties(email: string, password: string, repeatPassword: string) {
     const schema = Joi.object().keys({

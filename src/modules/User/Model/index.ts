@@ -31,7 +31,7 @@ userSchema.pre("save", function save(next) {
   if (!user.isModified("password")) {
     return next();
   }
-  user.password = bcrypt.hashSync(user.password, "10");
+  user.password = bcrypt.hashSync(user.password, 10);
 });
 
 const comparePassword: comparePasswordFunction = function (
