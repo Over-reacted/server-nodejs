@@ -7,7 +7,7 @@ import {
   BadRequestError,
 } from "../../../../errors";
 
-export class createUser {
+export class createUserCommand {
   @logMethod
   async invoke({
     email,
