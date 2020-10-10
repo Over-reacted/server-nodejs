@@ -1,11 +1,8 @@
 import Joi from "@hapi/joi";
+import bcrypt from "bcrypt";
 import { logMethod } from "../../../../decorators/log";
 import { User } from "../../Model";
-import {
-  RequestValidationError,
-  DatabaseError,
-  BadRequestError,
-} from "../../../../errors";
+import { RequestValidationError, BadRequestError } from "../../../../errors";
 
 export class createUserCommand {
   @logMethod
@@ -26,18 +23,18 @@ export class createUserCommand {
       password: normalisedPassword,
     } = this.normalizeProperties(email, password);
 
-    const doesUserExist = User.findOne({ email: normalisedEmail });
-
-    if (doesUserExist) {
-      throw new BadRequestError("User already exists!");
-    }
+    const userExists = await User.findOne({ email: normalisedEmail }).exec();
+    if (userExists) throw new BadRequestError("User already exists!");
 
     const user = new User({
       email: normalisedEmail,
       password: normalisedPassword,
     });
-    user.save();
-    return user;
+
+    user.save((err) => {
+      if (err) throw new BadRequestError(err);
+    });
+    return user.id;
   }
   validateProperties(email: string, password: string, repeatPassword: string) {
     const schema = Joi.object().keys({
@@ -50,11 +47,11 @@ export class createUserCommand {
     }
 
     const { error } = schema.validate({ email, password });
-
     if (error) throw new RequestValidationError(error);
   }
 
   normalizeProperties(email: string, password: string) {
+    password = bcrypt.hashSync(password, 10);
     return {
       email: email.toLowerCase(),
       password,
