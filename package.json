@@ -6,8 +6,8 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf ./dist && tsc",
-    "start": "NODE_ENV=production node ./build/index.js",
-    "start:dev": "NODE_ENV=development nodemon",
+    "start": "cross-env NODE_ENV=production node ./build/index.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon",
     "test": "jest --watch --detectOpenHandles",
     "lint": "eslint . --ext .ts,.tsx"
   },
@@ -27,6 +27,7 @@
     "compression": "^1.7.4",
     "connect-mongo": "^3.2.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
