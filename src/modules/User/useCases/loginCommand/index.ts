@@ -17,7 +17,7 @@ export class loginCommand {
   }) {
     this.validateProperties(email, password);
 
-    let normalisedEmail: string = this.normalizeEmail(email);
+    const normalisedEmail = this.normalizeEmail(email);
     const userExists = await User.findOne({ email: normalisedEmail }).exec();
 
     if (userExists) {
@@ -40,7 +40,7 @@ export class loginCommand {
     if (error) throw new RequestValidationError(error);
   }
 
-  normalizeEmail(email: string) {
-    return  email.toLowerCase();
+  normalizeEmail(email: string): string {
+    return email.toLowerCase();
   }
 }

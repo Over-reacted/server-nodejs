@@ -17,7 +17,7 @@ import {
 class UserController {
   @Post("/signup")
   @Require("email", "password", "repeatPassword")
-  async register(req: Request, res: Response, next: NextFunction) {
+  async signup(req: Request, res: Response, next: NextFunction) {
     const command = new createUserCommand();
     const id = await command.invoke(req.body);
     jwt.sign({ id }, Keys.jwtSecret, { expiresIn: "24h" }, (_, token) => {
