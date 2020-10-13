@@ -8,14 +8,27 @@ import {
   Post,
   Require,
 } from "../../decorators/controllers";
-import { createUserCommand } from "./useCases";
+import {
+  createUserCommand,
+  loginCommand,
+} from "./useCases";
 
 @Controller("/user")
 class UserController {
   @Post("/signup")
   @Require("email", "password", "repeatPassword")
-  async login(req: Request, res: Response, next: NextFunction) {
+  async register(req: Request, res: Response, next: NextFunction) {
     const command = new createUserCommand();
+    const id = await command.invoke(req.body);
+    jwt.sign({ id }, Keys.jwtSecret, { expiresIn: "24h" }, (_, token) => {
+      res.status(200).send({ token, id });
+    });
+  }
+
+  @Post("/login")
+  @Require("email", "password")
+  async login(req: Request, res: Response, next: NextFunction) {
+    const command = new loginCommand();
     const id = await command.invoke(req.body);
     jwt.sign({ id }, Keys.jwtSecret, { expiresIn: "24h" }, (_, token) => {
       res.status(200).send({ token, id });
