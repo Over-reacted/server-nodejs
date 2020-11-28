@@ -116,3 +116,5 @@ dist
 .pnp.*
 
 src/build/
+.idea/
+package-lock.json
