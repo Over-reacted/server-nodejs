@@ -22,7 +22,7 @@ services:
       - NEST_PORT=3000
       - NGINX_MAX_BODY=100M
     ports:
-      - 80:80
+      - 4000:4000
 
   db:
     image: mariadb:10
