@@ -1,24 +1,24 @@
-import  crypto from 'crypto';
+import { createHmac } from 'crypto';
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { User, UserFillableFields } from './user.entity';
+import { Customer, CustomerFillableFields } from './customer.entity';
 
 @Injectable()
-export class UsersService {
+export class CustomersService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(Customer)
+    private readonly customerRepository: Repository<Customer>,
   ) {}
 
   async get(id: number) {
-    return this.userRepository.findOne(id);
+    return this.customerRepository.findOne(id);
   }
 
   async getByEmailAndPass(email: string, password: string) {
-    const passHash = crypto.createHmac('sha256', password).digest('hex');
-    return await this.userRepository
+    const passHash = createHmac('sha256', password).digest('hex');
+    return await this.customerRepository
       .createQueryBuilder('users')
       .where('users.email = :email and users.password = :password')
       .setParameter('email', email)
@@ -27,22 +27,22 @@ export class UsersService {
   }
 
   async getByEmail(email: string) {
-    return await this.userRepository
+    return await this.customerRepository
       .createQueryBuilder('users')
       .where('users.email = :email')
       .setParameter('email', email)
       .getOne();
   }
 
-  async create(payload: UserFillableFields) {
-    const user = await this.getByEmail(payload.email);
+  async create(payload: CustomerFillableFields) {
+    const customer = await this.getByEmail(payload.email);
 
-    if (user) {
+    if (customer) {
       throw new NotAcceptableException(
-        'User with provided email already created.',
+        'Customer with provided email already created.',
       );
     }
 
-    return await this.userRepository.save(this.userRepository.create(payload));
+    return await this.customerRepository.save(this.customerRepository.create(payload));
   }
 }

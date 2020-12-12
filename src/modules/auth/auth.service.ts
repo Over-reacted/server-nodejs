@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from './../config';
-import { User, UsersService } from '../user';
+import { Customer, CustomerModule, CustomersService } from '../customer';
 import { LoginPayload } from './login.payload';
 
 @Injectable()
@@ -9,25 +9,25 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly userService: UsersService,
+    private readonly customersService: CustomersService,
   ) {}
 
-  async createToken(user: User) {
+  async createToken(customer: Customer) {
     return {
       expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
-      accessToken: this.jwtService.sign({ id: user.id }),
-      user,
+      accessToken: this.jwtService.sign({ id: customer.id }),
+      customer,
     };
   }
 
-  async validateUser(payload: LoginPayload): Promise<any> {
-    const user = await this.userService.getByEmailAndPass(
+  async validateCustomer(payload: LoginPayload): Promise<any> {
+    const customer = await this.customersService.getByEmailAndPass(
       payload.email,
       payload.password,
     );
-    if (!user) {
+    if (!customer) {
       throw new UnauthorizedException('Wrong login combination!');
     }
-    return user;
+    return customer;
   }
 }
