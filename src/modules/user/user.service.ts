@@ -12,6 +12,10 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async get(id: number) {
+    return this.userRepository.findOne(id);
+  }
+
   async getByEmailAndPass(email: string, password: string) {
     const passHash = crypto.createHmac('sha256', password).digest('hex');
     return await this.userRepository
