@@ -25,17 +25,14 @@ services:
       - 4000:4000
 
   db:
-    image: mariadb:10
+    image: postgres
     container_name: nest-db
     environment:
-      MYSQL_DATABASE: nest
-      MYSQL_USER: nest
-      MYSQL_PASSWORD: nest
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_PASSWORD: nest
     ports:
       - 3306:3306
     volumes:
-      - mariadbdata:/var/lib/mysql
+      - postgresdata:/var/lib/postgre
 
 volumes:
-  mariadbdata:
+  postgresdata:
