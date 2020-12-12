@@ -11,8 +11,12 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async get(id: number) {
-    return this.userRepository.findOne(id);
+  async getByEmail(email: string) {
+    return await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.email = :email')
+      .setParameter('email', email)
+      .getOne();
   }
 
   async create(payload: UserFillableFields) {
