@@ -11,6 +11,10 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async get(id: number) {
+    return this.userRepository.findOne(id);
+  }
+
   async create(payload: UserFillableFields) {
     const id = 1;
     // Id is 1 for mocking purpose, we should decrypt the JWT somewhere along the chain
