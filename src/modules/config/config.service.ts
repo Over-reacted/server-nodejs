@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-import fs from 'fs';
+import * as dotenv from 'dotenv';
+import * as fs from 'fs';
 
 export class ConfigService {
   private readonly envConfig: { [key: string]: string };

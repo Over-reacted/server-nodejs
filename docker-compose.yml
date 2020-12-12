@@ -22,17 +22,20 @@ services:
       - NEST_PORT=3000
       - NGINX_MAX_BODY=100M
     ports:
-      - 4000:4000
+      - 80:80
 
   db:
-    image: postgres
+    image: mariadb:10
     container_name: nest-db
     environment:
-      POSTGRES_PASSWORD: nest
+      MYSQL_DATABASE: nest
+      MYSQL_USER: nest
+      MYSQL_PASSWORD: nest
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - 3306:3306
     volumes:
-      - postgresdata:/var/lib/postgre
+      - mariadbdata:/var/lib/mysql
 
 volumes:
-  postgresdata:
+  mariadbdata:
