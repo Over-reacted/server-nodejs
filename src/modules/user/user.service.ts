@@ -1,3 +1,4 @@
+import  crypto from 'crypto';
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,11 +12,13 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async getByEmail(email: string) {
+  async getByEmailAndPass(email: string, password: string) {
+    const passHash = crypto.createHmac('sha256', password).digest('hex');
     return await this.userRepository
       .createQueryBuilder('users')
-      .where('users.email = :email')
+      .where('users.email = :email and users.password = :password')
       .setParameter('email', email)
+      .setParameter('password', passHash)
       .getOne();
   }
 
