@@ -1,5 +1,6 @@
 import { Exclude } from 'class-transformer';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Ad } from 'modules/ad/ad.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { PasswordTransformer } from './password.transformer';
 
 @Entity({
@@ -32,10 +33,11 @@ export class Customer {
   @Exclude()
   password!: string;
 
-
+  @OneToMany(() => Ad, ad => ad.customer)
+  ads: Ad[];
 }
 
-export class CustomerFillableFields {
+export class CustomerEntity {
   name!: string;
   description!: string;
   email!: string;
