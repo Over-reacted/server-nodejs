@@ -1,0 +1,43 @@
+import { Exclude } from 'class-transformer';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { PasswordTransformer } from './password.transformer';
+
+@Entity({
+  name: 'customers',
+})
+export class Customer {
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Column({ length: 50, default: null } )
+  name: string;
+
+  @Column({ length: 500, default: null })
+  description: string;
+
+  @Column({ length: 255 })
+  email!: string;
+
+  @Column({ length: 12, default: null })
+  phone: string;
+
+  @Column({ length: 35, default: null })
+  location: string;
+
+  @Column({
+    name: 'password',
+    length: 255,
+    transformer: new PasswordTransformer(),
+  })
+  @Exclude()
+  password!: string;
+}
+
+export class CustomerEntity {
+  email!: string;
+  password!: string;
+  name?: string;
+  description?: string;
+  phone?: string;
+  location?: string;
+}

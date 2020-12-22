@@ -5,8 +5,10 @@ export class LoginPayload {
   @ApiProperty({
     required: true,
   })
+  @IsNotEmpty()
   @IsEmail()
   email!: string;
+
   @ApiProperty({
     required: true,
   })
