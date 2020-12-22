@@ -13,7 +13,7 @@ export class CustomersService {
   ) {}
 
   async get(id: number) {
-    return this.customerRepository.findOne(id);
+    return await this.customerRepository.findOne(id);
   }
 
   async getByEmailAndPass(email: string, password: string) {

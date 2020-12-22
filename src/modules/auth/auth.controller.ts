@@ -1,5 +1,5 @@
 import { Controller, Body, Post } from '@nestjs/common';
-import { ApiResponse, ApiTags, ApiOkResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService, LoginPayload, RegisterPayload } from './';
 import { CustomersService } from '../customer';
 
