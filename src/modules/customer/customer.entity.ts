@@ -1,4 +1,5 @@
 import { Exclude } from 'class-transformer';
+import { UserRoles } from 'shared/user-roles';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { PasswordTransformer } from './password.transformer';
 
@@ -31,6 +32,13 @@ export class Customer {
   })
   @Exclude()
   password!: string;
+
+  @Column({
+    type: "enum",
+    enum: UserRoles,
+    default: UserRoles.CUSTOMER
+  })
+  role: UserRoles;
 }
 
 export class CustomerEntity {
