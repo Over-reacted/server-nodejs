@@ -1,5 +1,7 @@
 export * from './payloads/login.payload';
 export * from './payloads/register.payload';
+export * from './payloads/confirm-account.payload';
+export * from './payloads/forgot-password.payload';
 export * from './auth.service';
 export * from './jwt.strategy';
 export * from './auth.module';
