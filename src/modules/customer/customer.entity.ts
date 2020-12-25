@@ -1,5 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { UserRoles } from 'shared/user-roles';
+import { UserStatus } from 'shared/user-status';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { PasswordTransformer } from './password.transformer';
 
@@ -39,6 +40,13 @@ export class Customer {
     default: UserRoles.CUSTOMER
   })
   role: UserRoles;
+
+  @Column({
+    type: "enum",
+    enum: UserStatus,
+    default: UserStatus.PENDING
+  })
+  emailStatus: UserStatus;
 }
 
 export class CustomerEntity {
