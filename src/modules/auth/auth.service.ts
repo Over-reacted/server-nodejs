@@ -6,7 +6,7 @@ import { LoginPayload } from './payloads/login.payload';
 import { MailerService } from '@nestjs-modules/mailer';
 import { TokenPayload, TokensService } from 'modules/token';
 import { ForgotPasswordPayload } from './payloads/forgot-password.payload';
-import { UserStatus } from 'shared/user-status';
+import { ChangePasswordPayload } from './payloads/change-password.payload';
 
 @Injectable()
 export class AuthService {
@@ -45,6 +45,12 @@ export class AuthService {
     if (!customer) {
       throw new UnauthorizedException('Invalid credentials!');
     }
+
+    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer.id);
+
+    if (!isEmailConfirmed) {
+      throw new MethodNotAllowedException('Please confirm your email account');
+    }
     return customer;
   }
 
@@ -54,7 +60,7 @@ export class AuthService {
         throw new BadRequestException('Invalid email');
     }
     const token = await this.signUser(customer);
-    const forgotLink = `${this.clientAppUrl}/auth/forgotPassword?token=${token}`;
+    const forgotLink = `${this.clientAppUrl}/auth/resetPassword?token=${token}`;
 
     await this.mailService.sendMail({
         from: this.appEmail,
@@ -68,17 +74,32 @@ export class AuthService {
   }
 
   async confirm(token: string) {
-    const data = await this.verifyToken(token);
-    const customer = await this.customersService.get(data.customerId);
+    const tokenPayload = await this.verifyToken(token);
+    const customer = await this.customersService.get(tokenPayload.customerId);
 
-    await this.tokenService.delete(data.customerId, token);
+    await this.tokenService.delete(tokenPayload.customerId, token);
 
-    if (customer && customer.emailStatus === UserStatus.PENDING) {
-        customer.emailStatus = UserStatus.ACTIVE;
-        await this.customersService.update(customer);
+    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer.id);
+
+    if (customer && !isEmailConfirmed) {
+        return await this.customersService.setStatusToActive(customer.id);
+    }
+    throw new BadRequestException('Confirmation error');
+  }
+
+  async resetPassword(token: string, payload: ChangePasswordPayload) {
+    const tokenPayload = await this.verifyToken(token);
+    const customer = await this.customersService.get(tokenPayload.customerId);
+
+    await this.tokenService.delete(tokenPayload.customerId, token);
+
+    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer.id);
+
+    if (customer && isEmailConfirmed) {
+        return await this.customersService.resetPassword(customer.id, payload.password)
     }
 
-    throw new BadRequestException('Confirmation error');
+    throw new BadRequestException('An error occured');
   }
 
   private async sendConfirmation(customer: Customer) {
@@ -97,8 +118,9 @@ export class AuthService {
   }
   
   private async signUser(customer: Customer, statusCheck: boolean = true) {
+    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer.id);
 
-    if (statusCheck && (customer.emailStatus !== UserStatus.ACTIVE)) {
+    if (statusCheck && (!isEmailConfirmed)) {
         throw new MethodNotAllowedException('Please confirm your email account');
     }
 

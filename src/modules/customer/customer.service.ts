@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Customer, CustomerEntity } from './customer.entity';
+import { UserStatus } from 'shared/user-status';
 
 @Injectable()
 export class CustomersService {
@@ -45,11 +46,22 @@ export class CustomersService {
     return await this.customerRepository.save(this.customerRepository.create(payload));
   }
 
-  async update(payload: Customer) {
+  async isEmailConfirmed(id: number) {
+    const customer = await this.customerRepository.findOne(id);
+    return customer?.emailStatus === UserStatus.ACTIVE;
+  }
+
+  async setStatusToActive(id: number) {
     return this.customerRepository.save({
-      id: payload.id,
-      email: payload.email,
-      emailStatus: payload.emailStatus
+      id: id,
+      emailStatus: UserStatus.ACTIVE
+    });
+  }
+
+  async resetPassword(id: number, password: string) {
+    return await this.customerRepository.save({
+      id: id,
+      password: password
     });
   }
 }
