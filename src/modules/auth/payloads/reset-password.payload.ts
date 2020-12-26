@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, MinLength } from "class-validator";
 import { Match } from "../decorators/match.decorator";
 
-export class ChangePasswordPayload {
+export class ResetPasswordPayload {
    @ApiProperty({
       required: true,
     })

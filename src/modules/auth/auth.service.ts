@@ -6,7 +6,7 @@ import { LoginPayload } from './payloads/login.payload';
 import { MailerService } from '@nestjs-modules/mailer';
 import { TokenPayload, TokensService } from 'modules/token';
 import { ForgotPasswordPayload } from './payloads/forgot-password.payload';
-import { ChangePasswordPayload } from './payloads/change-password.payload';
+import { ResetPasswordPayload } from './payloads/reset-password.payload';
 
 @Injectable()
 export class AuthService {
@@ -87,11 +87,11 @@ export class AuthService {
     throw new BadRequestException('Confirmation error');
   }
 
-  async resetPassword(token: string, payload: ChangePasswordPayload) {
+  async resetPassword(token: string, payload: ResetPasswordPayload) {
     const tokenPayload = await this.verifyToken(token);
     const customer = await this.customersService.get(tokenPayload.customerId);
 
-    await this.tokenService.delete(tokenPayload.customerId, token);
+    await this.tokenService.deleteAll(tokenPayload.customerId);
 
     const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer.id);
 

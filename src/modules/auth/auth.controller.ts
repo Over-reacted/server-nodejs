@@ -1,7 +1,7 @@
 import { Controller, Body, Post, Query, Get } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService, LoginPayload, RegisterPayload } from './';
-import { ChangePasswordPayload } from './payloads/change-password.payload';
+import { ResetPasswordPayload } from './payloads/reset-password.payload';
 import { TokenQueryPayload } from './payloads/token-query.payload';
 import { ForgotPasswordPayload } from './payloads/forgot-password.payload';
 
@@ -40,7 +40,7 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'Successful password reset' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 405, description: 'Email is not confirmed' })
-  async resetPassword(@Query() query: TokenQueryPayload, @Body() payload : ChangePasswordPayload) {
+  async resetPassword(@Query() query: TokenQueryPayload, @Body() payload : ResetPasswordPayload) {
       await this.authService.resetPassword(query.token, payload);
   }
 
