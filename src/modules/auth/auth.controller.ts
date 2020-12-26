@@ -25,7 +25,12 @@ export class AuthController {
   async register(@Body() payload: RegisterPayload): Promise<any> {
     await this.authService.register(payload);
   }
-  
+
+  @Get('/confirm')
+  async confirm(@Query() query: ConfirmAccountPayload) {
+      await this.authService.confirm(query.token);
+  }
+
   @Post('/forgotPassword')
   async forgotPassword(@Body() payload: ForgotPasswordPayload) {
       await this.authService.forgotPassword(payload);

@@ -67,6 +67,20 @@ export class AuthService {
     });    
   }
 
+  async confirm(token: string) {
+    const data = await this.verifyToken(token);
+    const customer = await this.customersService.get(data.customerId);
+
+    await this.tokenService.delete(data.customerId, token);
+
+    if (customer && customer.emailStatus === UserStatus.PENDING) {
+        customer.emailStatus = UserStatus.ACTIVE;
+        await this.customersService.update(customer);
+    }
+
+    throw new BadRequestException('Confirmation error');
+  }
+
   private async sendConfirmation(customer: Customer) {
     const token = await this.signUser(customer, false);
     const confirmLink = `${this.clientAppUrl}/api/auth/confirm?token=${token}`;
