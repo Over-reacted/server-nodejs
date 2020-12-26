@@ -44,4 +44,12 @@ export class CustomersService {
     }
     return await this.customerRepository.save(this.customerRepository.create(payload));
   }
+
+  async update(payload: Customer) {
+    return this.customerRepository.save({
+      id: payload.id,
+      email: payload.email,
+      emailStatus: payload.emailStatus
+    });
+  }
 }

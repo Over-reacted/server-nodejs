@@ -3,7 +3,7 @@ import { IsNotEmpty } from "class-validator";
 
 export class ConfirmAccountPayload {
     @ApiProperty({
-        required: true
+      required: true
     })
     @IsNotEmpty()
     token: string;
