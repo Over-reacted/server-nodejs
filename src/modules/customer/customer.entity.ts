@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
-import { UserRoles } from 'shared/user-roles';
-import { UserStatus } from 'shared/user-status';
+import { UserRoles } from 'common/user-roles';
+import { UserStatus } from 'common/user-status';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { PasswordTransformer } from './password.transformer';
 

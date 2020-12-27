@@ -6,6 +6,6 @@ import { CustomersService } from './customer.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Customer])],
   exports: [CustomersService],
-  providers: [CustomersService],
+  providers: [CustomersService]
 })
 export class CustomerModule {}

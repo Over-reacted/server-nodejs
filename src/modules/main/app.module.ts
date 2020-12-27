@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from './../config';
 import { AuthModule } from './../auth';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { CustomerModule } from 'modules/customer';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
     ConfigModule,
     AuthModule,
+    CustomerModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, MinLength } from "class-validator";
-import { Match } from 'shared';
+import { Match } from 'common';
 
 export class ResetPasswordPayload {
    @ApiProperty({

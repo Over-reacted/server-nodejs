@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Customer, CustomerEntity } from './customer.entity';
-import { UserStatus } from 'shared/user-status';
+import { UserStatus } from 'common/user-status';
 
 @Injectable()
 export class CustomersService {
