@@ -5,8 +5,8 @@ import { Customer, CustomerEntity, CustomersService } from '../customer';
 import { LoginPayload } from './payloads/login.payload';
 import { MailerService } from '@nestjs-modules/mailer';
 import { TokenPayload, TokensService } from 'modules/token';
-import { ForgotPasswordPayload } from './payloads/forgot-password.payload';
 import { ResetPasswordPayload } from './payloads/reset-password.payload';
+import { EmailPayload } from './payloads/email.payload';
 
 @Injectable()
 export class AuthService {
@@ -56,7 +56,7 @@ export class AuthService {
     return customer;
   }
 
-  async forgotPassword(payload: ForgotPasswordPayload) {
+  async forgotPassword(payload: EmailPayload) {
     const customer = await this.customersService.getByEmail(payload.email);
     
     if (!customer) {
@@ -77,18 +77,18 @@ export class AuthService {
   }
 
   async confirm(token: string) {
-    const tokenPayload = await this.verifyToken(token, true);
+    const tokenPayload = await this.verifyToken(token);
     await this.customersService.changeEmailStatus(tokenPayload.customerId);
-    await this.tokenService.delete(tokenPayload.customerId, token);
+    await this.tokenService.deleteAll(tokenPayload.customerId);
   }
 
   async resetPassword(token: string, payload: ResetPasswordPayload) {
-    const tokenPayload = await this.verifyToken(token, true);
+    const tokenPayload = await this.verifyToken(token);
     await this.tokenService.deleteAll(tokenPayload.customerId);
     return await this.customersService.resetPassword(tokenPayload.customerId, payload.password)
   }
 
-  private async sendConfirmation(customer: Customer) {
+  async sendConfirmation(customer: Customer) {
     const token = await this.signUser(customer, false);
     const confirmLink = `${this.clientAppUrl}/api/auth/confirm?token=${token}`;
 
@@ -129,7 +129,7 @@ export class AuthService {
     return await this.jwtService.signAsync(payload);  
   }
 
-  private async verifyToken(token: string, emailStatusCheck: boolean = false) {
+  private async verifyToken(token: string) {
     const payload = await this.jwtService.verifyAsync(token) as TokenPayload;
     const customer = await this.customersService.get(payload.customerId);
     const tokenExists = await this.tokenService.exists(payload.customerId, token);
