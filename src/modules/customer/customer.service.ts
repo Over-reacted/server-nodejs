@@ -1,8 +1,7 @@
 import { createHmac } from 'crypto';
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
 import { Customer, CustomerEntity } from './customer.entity';
 import { UserStatus } from 'common/user-status';
 
@@ -62,5 +61,20 @@ export class CustomersService {
       id: id,
       password: password
     });
+  }
+
+  async changePassword(id: number, currentPassword: string, newPassword: string) {
+    const passHash = createHmac('sha256', currentPassword).digest('hex');
+    const customer = await this.customerRepository
+      .createQueryBuilder('customers')
+      .where('customers.id = :id and customers.password = :password')
+      .setParameter('id', id)
+      .setParameter('password', passHash)
+      .getOne();
+
+    if (!customer) {
+      throw new BadRequestException('Provided password was not correct');
+    }
+    await this.resetPassword(id, newPassword);
   }
 }
