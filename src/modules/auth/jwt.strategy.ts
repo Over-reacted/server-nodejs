@@ -25,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     const customer = await this.customersService.get(customerId);
 
-    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customerId);
+    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer);
 
     if (!(customer || isEmailConfirmed)) {
       throw new UnauthorizedException();

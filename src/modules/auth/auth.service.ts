@@ -40,22 +40,25 @@ export class AuthService {
   async validateCustomer(payload: LoginPayload) : Promise<Customer> {
     const customer = await this.customersService.getByEmailAndPass(
       payload.email,
-      payload.password,
+      payload.password
     );
+
+    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer);
+
     if (!customer) {
       throw new UnauthorizedException('Invalid credentials!');
     }
 
-    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer.id);
-
     if (!isEmailConfirmed) {
-      throw new MethodNotAllowedException('Please confirm your email account');
+      throw new MethodNotAllowedException('Please confirm your email!');
     }
+
     return customer;
   }
 
   async forgotPassword(payload: ForgotPasswordPayload) {
     const customer = await this.customersService.getByEmail(payload.email);
+    
     if (!customer) {
         throw new BadRequestException('Invalid email');
     }
@@ -74,32 +77,15 @@ export class AuthService {
   }
 
   async confirm(token: string) {
-    const tokenPayload = await this.verifyToken(token);
-    const customer = await this.customersService.get(tokenPayload.customerId);
-
+    const tokenPayload = await this.verifyToken(token, true);
+    await this.customersService.changeEmailStatus(tokenPayload.customerId);
     await this.tokenService.delete(tokenPayload.customerId, token);
-
-    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer.id);
-
-    if (customer && !isEmailConfirmed) {
-        return await this.customersService.setStatusToActive(customer.id);
-    }
-    throw new BadRequestException('Confirmation error');
   }
 
   async resetPassword(token: string, payload: ResetPasswordPayload) {
-    const tokenPayload = await this.verifyToken(token);
-    const customer = await this.customersService.get(tokenPayload.customerId);
-
+    const tokenPayload = await this.verifyToken(token, true);
     await this.tokenService.deleteAll(tokenPayload.customerId);
-
-    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer.id);
-
-    if (customer && isEmailConfirmed) {
-        return await this.customersService.resetPassword(customer.id, payload.password)
-    }
-
-    throw new BadRequestException('An error occured');
+    return await this.customersService.resetPassword(tokenPayload.customerId, payload.password)
   }
 
   private async sendConfirmation(customer: Customer) {
@@ -118,7 +104,8 @@ export class AuthService {
   }
   
   private async signUser(customer: Customer, statusCheck: boolean = true) {
-    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer.id);
+   
+    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer);
 
     if (statusCheck && (!isEmailConfirmed)) {
         throw new MethodNotAllowedException('Please confirm your email account');
@@ -142,11 +129,12 @@ export class AuthService {
     return await this.jwtService.signAsync(payload);  
   }
 
-  private async verifyToken(token: string) {
+  private async verifyToken(token: string, emailStatusCheck: boolean = false) {
     const payload = await this.jwtService.verifyAsync(token) as TokenPayload;
+    const customer = await this.customersService.get(payload.customerId);
     const tokenExists = await this.tokenService.exists(payload.customerId, token);
 
-    if (tokenExists) {
+    if (customer && tokenExists) {
         return payload;
     }
     throw new UnauthorizedException();

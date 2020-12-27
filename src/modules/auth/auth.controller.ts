@@ -12,7 +12,7 @@ export class AuthController {
     private readonly authService: AuthService
   ) {}
 
-  @Post('login')
+  @Post('/login')
   @ApiResponse({ status: 201, description: 'Successful Login' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 405, description: 'Email is not confirmed' })
@@ -21,7 +21,7 @@ export class AuthController {
     return await this.authService.getTokenForSignIn(customer);
   }
 
-  @Post('register')
+  @Post('/register')
   @ApiResponse({ status: 201, description: 'Successful Registration' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   async register(@Body() payload: RegisterPayload) {

@@ -46,15 +46,14 @@ export class CustomersService {
     return await this.customerRepository.save(this.customerRepository.create(payload));
   }
 
-  async isEmailConfirmed(id: number) {
-    const customer = await this.customerRepository.findOne(id);
+  async isEmailConfirmed(customer: Customer) {
     return customer?.emailStatus === UserStatus.ACTIVE;
   }
 
-  async setStatusToActive(id: number) {
+  async changeEmailStatus(id: number, emailStatus: UserStatus = UserStatus.ACTIVE) {
     return this.customerRepository.save({
       id: id,
-      emailStatus: UserStatus.ACTIVE
+      emailStatus: emailStatus
     });
   }
 
