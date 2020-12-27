@@ -1,7 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { UserRoles } from 'common/user-roles';
 import { UserStatus } from 'common/user-status';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { PasswordTransformer } from './password.transformer';
 
 @Entity({
