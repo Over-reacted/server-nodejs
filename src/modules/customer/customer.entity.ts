@@ -20,7 +20,7 @@ export class Customer {
   @Column({ length: 255 })
   email!: string;
 
-  @Column({ length: 12, default: null })
+  @Column({ length: 15, default: null })
   phone: string;
 
   @Column({ length: 35, default: null })

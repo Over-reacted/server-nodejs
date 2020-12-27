@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Customer, CustomerEntity } from './customer.entity';
 import { UserStatus } from 'common/user-status';
+import { UpdateCustomerPayload } from './payloads/update-customer.payload';
 
 @Injectable()
 export class CustomersService {
@@ -60,6 +61,16 @@ export class CustomersService {
     return await this.customerRepository.save({
       id: id,
       password: password
+    });
+  }
+
+  async update(id: number, payload: UpdateCustomerPayload) {
+    return await this.customerRepository.save({
+      id: id,
+      name: payload.name,
+      description: payload.description,
+      location: payload.location,
+      phone: payload.phoneNumber
     });
   }
 
