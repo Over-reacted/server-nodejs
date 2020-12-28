@@ -25,7 +25,7 @@ export class AuthService {
     this.clientAppUrl = this.configService.get('APP_URL')
   }
 
-  async getTokenForSignIn(customer: Customer) {
+  async createPasswordToken(customer: Customer) {
     return {
       expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
       accessToken: await this.generateToken({customerId: customer.id})
