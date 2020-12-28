@@ -104,11 +104,13 @@ export class AuthService {
   }
   
   private async signUser(customer: Customer, statusCheck: boolean = true) {
-   
-    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer);
+  
+    if (statusCheck) {
+      const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer);
 
-    if (statusCheck && (!isEmailConfirmed)) {
+      if (!isEmailConfirmed) {
         throw new MethodNotAllowedException('Please confirm your email account');
+      }
     }
 
     const payload: TokenPayload = {
