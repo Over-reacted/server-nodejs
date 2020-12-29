@@ -1,5 +1,7 @@
 import { Exclude } from 'class-transformer';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { UserRoles } from 'common/user-roles';
+import { UserStatus } from 'common/user-status';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { PasswordTransformer } from './password.transformer';
 
 @Entity({
@@ -18,7 +20,7 @@ export class Customer {
   @Column({ length: 255 })
   email!: string;
 
-  @Column({ length: 12, default: null })
+  @Column({ length: 15, default: null })
   phone: string;
 
   @Column({ length: 35, default: null })
@@ -31,6 +33,20 @@ export class Customer {
   })
   @Exclude()
   password!: string;
+
+  @Column({
+    type: "enum",
+    enum: UserRoles,
+    default: UserRoles.CUSTOMER
+  })
+  role: UserRoles;
+
+  @Column({
+    type: "enum",
+    enum: UserStatus,
+    default: UserStatus.PENDING
+  })
+  emailStatus: UserStatus;
 }
 
 export class CustomerEntity {

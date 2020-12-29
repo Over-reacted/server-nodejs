@@ -17,14 +17,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate({ iat, exp, id }: any, done) {
+  async validate({ iat, exp, customerId }: any, done) {
     const timeDiff = exp - iat;
     if (timeDiff <= 0) {
       throw new UnauthorizedException();
     }
 
-    const customer = await this.customersService.get(id);
-    if (!customer) {
+    const customer = await this.customersService.get(customerId);
+
+    const isEmailConfirmed = await this.customersService.isEmailConfirmed(customer);
+
+    if (!(customer || isEmailConfirmed)) {
       throw new UnauthorizedException();
     }
 

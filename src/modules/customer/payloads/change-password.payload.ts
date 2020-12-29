@@ -1,21 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, MinLength } from "class-validator";
 import { Match } from 'common';
 
-export class RegisterPayload {
-  @ApiProperty({
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsEmail()
-  email!: string;
-
+export class ChangePasswordPayload {
   @ApiProperty({
     required: true,
   })
   @IsNotEmpty()
   @MinLength(5)
-  password!: string;
+  currentPassword!: string;
+    
+  @ApiProperty({
+    required: true,
+  })
+  @IsNotEmpty()
+  @MinLength(5)
+  newPassword!: string;
 
   @ApiProperty({
     required: true,
